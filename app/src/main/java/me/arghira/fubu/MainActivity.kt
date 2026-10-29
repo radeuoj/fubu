@@ -15,6 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -45,6 +46,7 @@ import org.maplibre.compose.map.MaplibreMap
 import org.maplibre.compose.map.rememberMapState
 import org.maplibre.compose.style.BaseStyle
 import kotlin.collections.getOrDefault
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -100,14 +102,17 @@ class MainActivity : ComponentActivity() {
                         }
                     )
 
-                    Text(
-                        runBlocking { AppDatabase.get(this@MainActivity).locationDao().getAll() }
-                            .map { "${it.latitude} ${it.longitude}" }
-                            .joinToString("\n"),
+                    Column(
                         modifier = Modifier
                             .statusBarsPadding()
                             .padding(horizontal = 10.dp, vertical = 100.dp),
-                    )
+                    ) {
+                        Text("count: ${runBlocking { AppDatabase.get(this@MainActivity).locationDao().count() }}")
+
+                        Text(runBlocking { AppDatabase.get(this@MainActivity).locationDao().getLast10() }
+                            .map { "${it.latitude} ${it.longitude} at ${it.time}" }
+                            .joinToString("\n"))
+                    }
                 }
             }
         }

@@ -30,13 +30,8 @@ class LocationTrackingService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent?.action == ACTION_STOP) {
-            stopSelf()
-            return START_NOT_STICKY
-        }
-
-        startInForeground()
+    override fun onCreate() {
+        super.onCreate()
 
         scope.launch {
             while (isActive) {
@@ -63,6 +58,15 @@ class LocationTrackingService : Service() {
                 delay(POLL_INTERVAL)
             }
         }
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == ACTION_STOP) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
+        startInForeground()
 
         return START_STICKY
     }

@@ -17,8 +17,11 @@ data class Location(
 
 @Dao
 interface LocationDao {
-    @Query("SELECT * FROM locations")
-    suspend fun getAll(): List<Location>
+    @Query("SELECT * FROM locations ORDER BY id desc LIMIT 10")
+    suspend fun getLast10(): List<Location>
+
+    @Query("SELECT COUNT(*) FROM locations")
+    suspend fun count(): Int
 
     @Insert
     suspend fun insert(location: Location)
