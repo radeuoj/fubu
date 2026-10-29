@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -55,4 +56,8 @@ dependencies {
     implementation(libs.maplibre.compose)
     runtimeOnly("org.maplibre.compose:maplibre-compose-runtime-vulkan-android:0.20.0")
     implementation("com.google.android.gms:play-services-location:21.4.0")
+    val room = "2.8.5"
+    implementation("androidx.room:room-runtime:$room")
+    implementation("androidx.room:room-ktx:$room")
+    ksp("androidx.room:room-compiler:$room")
 }

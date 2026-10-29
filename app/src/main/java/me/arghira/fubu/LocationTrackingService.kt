@@ -49,7 +49,13 @@ class LocationTrackingService : Service() {
                             "FubuLocation",
                             "Fix ${loc.latitude} ${loc.longitude} acc=${loc.accuracy}m"
                         )
-                        LocationUploader.upload(loc)
+//                        LocationUploader.upload(loc)
+                        AppDatabase.get(this@LocationTrackingService).locationDao().insert(Location(
+                            latitude = loc.latitude,
+                            longitude = loc.longitude,
+                            accuracy = loc.accuracy,
+                            time = loc.time,
+                        ))
                     }
                 } catch (e: Exception) {
                     Log.e("FubuLocation", "Tick failed", e)

@@ -37,6 +37,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 import me.arghira.fubu.ui.theme.FubuTheme
 import org.maplibre.compose.layers.LocationIndicatorLayer
 import org.maplibre.compose.location.rememberLocationState
@@ -51,8 +52,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FubuTheme {
-                val locs = remember { mutableStateListOf<Location>() }
-
                 var hasPermission by remember {
                     mutableStateOf(
                         ContextCompat.checkSelfPermission(
@@ -102,7 +101,9 @@ class MainActivity : ComponentActivity() {
                     )
 
                     Text(
-                        locs.map { "${it.latitude} ${it.longitude}" }.joinToString("\n"),
+                        runBlocking { AppDatabase.get(this@MainActivity).locationDao().getAll() }
+                            .map { "${it.latitude} ${it.longitude}" }
+                            .joinToString("\n"),
                         modifier = Modifier
                             .statusBarsPadding()
                             .padding(horizontal = 10.dp, vertical = 100.dp),
